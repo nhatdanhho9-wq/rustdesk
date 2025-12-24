@@ -121,8 +121,8 @@ class FfiModel with ChangeNotifier {
   Timer? _timer;
   var _reconnects = 1;
   bool _viewOnly = false;
-  bool _showMyCursor = false;
   bool _lockZoom = false;
+  bool _showMyCursor = false;
   WeakReference<FFI> parent;
   late final SessionID sessionId;
 
@@ -162,8 +162,8 @@ class FfiModel with ChangeNotifier {
 
   bool get isPeerLinux => _pi.platform == kPeerPlatformLinux;
 
-  bool get viewOnly => _viewOnly;
   bool get lockZoom => _lockZoom;
+  bool get viewOnly => _viewOnly;
   bool get showMyCursor => _showMyCursor;
 
   set inputBlocked(v) {
