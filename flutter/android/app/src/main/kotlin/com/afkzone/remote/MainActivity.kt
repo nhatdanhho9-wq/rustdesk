@@ -1,4 +1,4 @@
-package com.carriez.flutter_hbb
+package com.afkzone.remote
 
 /**
  * Handle events from flutter

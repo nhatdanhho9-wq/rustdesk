@@ -611,6 +611,13 @@ Future<List<TToggleMenu>> toolbarDisplayToggle(
         ffi.qualityMonitorModel.checkShowQualityMonitor(sessionId);
       },
       child: Text(translate('Show quality monitor'))));
+  v.add(TToggleMenu(
+      value: ffi.ffiModel.lockZoom,
+      onChanged: (value) {
+        if (value == null) return;
+        ffi.ffiModel.setLockZoom(value);
+      },
+      child: Text(translate("Lock Zoom"))));
   // mute
   if (isDefaultConn && perms['audio'] != false) {
     final option = 'disable-audio';

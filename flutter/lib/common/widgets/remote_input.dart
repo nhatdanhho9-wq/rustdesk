@@ -429,6 +429,10 @@ class _RawTouchGestureDetectorRegionState
     if (isNotTouchBasedDevice()) {
       return;
     }
+    // Disable zoom if locked
+    if (ffi.ffiModel.lockZoom) {
+      return;
+    }
 
     // If in special drag mode, perform a pan instead of a scale.
     if (isSpecialHoldDragActive) {

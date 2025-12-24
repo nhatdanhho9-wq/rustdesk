@@ -74,6 +74,7 @@ class ToolbarState {
 
       collapse.value = results[0] ?? false;
       hide.value = results[1] ?? false;
+collapse.value = true;
     } finally {
       _isInitializing = false;
       initialized.value = true;
