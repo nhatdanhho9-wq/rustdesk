@@ -2037,7 +2037,6 @@ class EdgeScrollFallbackState {
 }
 
 class CanvasModel with ChangeNotifier {
-bool _zoomLocked = false;
   // image offset of canvas
   double _x = 0;
   // image offset of canvas
@@ -2089,9 +2088,7 @@ bool _zoomLocked = false;
   double get x => _x;
   double get y => _y;
   double get scale => _scale;
-bool get zoomLocked => _zoomLocked;\n  setZoomLocked(bool value) {\n    if (_zoomLocked == value) return;\n    _zoomLocked = value;\n    notifyListeners();\n  }
   double get devicePixelRatio => _devicePixelRatio;
-  Size get size => _size;
   ScrollStyle get scrollStyle => _scrollStyle;
   ViewStyle get viewStyle => _lastViewStyle;
   RxBool get imageOverflow => _imageOverflow;
@@ -2498,7 +2495,6 @@ bool get zoomLocked => _zoomLocked;\n  setZoomLocked(bool value) {\n    if (_zoo
 
   // mobile only
   updateScale(double v, Offset focalPoint) {
-if (_zoomLocked) return;
     if (parent.target?.imageModel.image == null) return;
     final s = _scale;
     _scale *= v;
