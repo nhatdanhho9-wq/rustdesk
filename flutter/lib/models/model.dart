@@ -1823,8 +1823,8 @@ class ImageModel with ChangeNotifier {
   double get maxScale {
     if (_image == null) return 1.5;
     final size = parent.target!.canvasModel.getSize();
-    final xscale = size.width / _image!.width;
-    final yscale = size.height / _image!.height;
+    final xscale = _size.width / _image!.width;
+    final yscale = _size.height / _image!.height;
     return max(1.5, max(xscale, yscale));
   }
 
@@ -1832,8 +1832,8 @@ class ImageModel with ChangeNotifier {
   double get minScale {
     if (_image == null) return 1.5;
     final size = parent.target!.canvasModel.getSize();
-    final xscale = size.width / _image!.width;
-    final yscale = size.height / _image!.height;
+    final xscale = _size.width / _image!.width;
+    final yscale = _size.height / _image!.height;
     return min(xscale, yscale) / 1.5;
   }
 
@@ -2127,8 +2127,8 @@ class CanvasModel with ChangeNotifier {
     final mediaData = MediaQueryData.fromView(ui.window);
     final size = mediaData.size;
     // If minimized, w or h may be negative here.
-    double w = size.width - leftToEdge - rightToEdge;
-    double h = size.height - topToEdge - bottomToEdge;
+    double w = _size.width - leftToEdge - rightToEdge;
+    double h = _size.height - topToEdge - bottomToEdge;
     if (isMobile) {
       h = h -
           mediaData.viewInsets.bottom -
@@ -2158,8 +2158,8 @@ class CanvasModel with ChangeNotifier {
     final displayHeight = getDisplayHeight();
     final viewStyle = ViewStyle(
       style: style,
-      width: size.width,
-      height: size.height,
+      width: _size.width,
+      height: _size.height,
       displayWidth: displayWidth,
       displayHeight: displayHeight,
     );
@@ -2212,8 +2212,8 @@ class CanvasModel with ChangeNotifier {
   }
 
   _resetCanvasOffset(int displayWidth, int displayHeight) {
-    _x = (size.width - displayWidth * _scale) / 2;
-    _y = (size.height - displayHeight * _scale) / 2;
+    _x = (_size.width - displayWidth * _scale) / 2;
+    _y = (_size.height - displayHeight * _scale) / 2;
     if (isMobile) {
       _moveToCenterCursor();
     }
@@ -2314,7 +2314,7 @@ class CanvasModel with ChangeNotifier {
   }
 
   void moveDesktopMouse(double x, double y) {
-    if (size.width == 0 || size.height == 0) {
+    if (_size.width == 0 || _size.height == 0) {
       return;
     }
 
@@ -2324,11 +2324,11 @@ class CanvasModel with ChangeNotifier {
     var dxOffset = 0;
     var dyOffset = 0;
     try {
-      if (dw > size.width) {
-        dxOffset = (x - dw * (x / size.width) - _x).toInt();
+      if (dw > _size.width) {
+        dxOffset = (x - dw * (x / _size.width) - _x).toInt();
       }
-      if (dh > size.height) {
-        dyOffset = (y - dh * (y / size.height) - _y).toInt();
+      if (dh > _size.height) {
+        dyOffset = (y - dh * (y / _size.height) - _y).toInt();
       }
     } catch (e) {
       debugPrintStack(
@@ -2375,7 +2375,7 @@ class CanvasModel with ChangeNotifier {
 
   void edgeScrollMouse(double x, double y) async {
     if ((_edgeScrollState == EdgeScrollState.inactive) ||
-        (size.width == 0 || size.height == 0) ||
+        (_size.width == 0 || _size.height == 0) ||
         !(_horizontal.hasClients || _vertical.hasClients)) {
       return;
     }
@@ -2386,7 +2386,7 @@ class CanvasModel with ChangeNotifier {
       // edge scroll regions. If the user has just moved the
       // cursor in from outside of the window, edge scrolling
       // doesn't happen yet.
-      final clientArea = Rect.fromLTWH(0, 0, size.width, size.height);
+      final clientArea = Rect.fromLTWH(0, 0, _size.width, _size.height);
 
       final innerZone = clientArea.deflate(_edgeScrollEdgeThickness.toDouble());
 
@@ -2403,14 +2403,14 @@ class CanvasModel with ChangeNotifier {
 
     if (x < _edgeScrollEdgeThickness) {
       dxOffset = x - _edgeScrollEdgeThickness;
-    } else if (x >= size.width - _edgeScrollEdgeThickness) {
-      dxOffset = x - (size.width - _edgeScrollEdgeThickness);
+    } else if (x >= _size.width - _edgeScrollEdgeThickness) {
+      dxOffset = x - (_size.width - _edgeScrollEdgeThickness);
     }
 
     if (y < _edgeScrollEdgeThickness) {
       dyOffset = y - _edgeScrollEdgeThickness;
-    } else if (y >= size.height - _edgeScrollEdgeThickness) {
-      dyOffset = y - (size.height - _edgeScrollEdgeThickness);
+    } else if (y >= _size.height - _edgeScrollEdgeThickness) {
+      dyOffset = y - (_size.height - _edgeScrollEdgeThickness);
     }
 
     var encroachment = Vector2(dxOffset, dyOffset);
@@ -2569,21 +2569,21 @@ class CanvasModel with ChangeNotifier {
       return;
     }
     final maxX = 0.0;
-    final minX = _size.width + (imageRect.left - imageRect.right) * _scale;
+    final minX = __size.width + (imageRect.left - imageRect.right) * _scale;
     final maxY = 0.0;
-    final minY = _size.height + (imageRect.top - imageRect.bottom) * _scale;
+    final minY = __size.height + (imageRect.top - imageRect.bottom) * _scale;
     Offset offsetToCenter =
         parent.target?.cursorModel.getCanvasOffsetToCenterCursor() ??
             Offset.zero;
     if (minX < 0) {
       _x = min(max(offsetToCenter.dx, minX), maxX);
     } else {
-      // _size.width > (imageRect.right, imageRect.left) * _scale, we should not change _x
+      // __size.width > (imageRect.right, imageRect.left) * _scale, we should not change _x
     }
     if (minY < 0) {
       _y = min(max(offsetToCenter.dy, minY), maxY);
     } else {
-      // _size.height > (imageRect.bottom - imageRect.top) * _scale, , we should not change _y
+      // __size.height > (imageRect.bottom - imageRect.top) * _scale, , we should not change _y
     }
   }
 }
@@ -2871,7 +2871,7 @@ class CursorModel with ChangeNotifier {
     final scale = parent.target?.canvasModel.scale ?? 1;
     final x0 = _displayOriginX - xoffset / scale;
     final y0 = _displayOriginY - yoffset / scale;
-    return Rect.fromLTWH(x0, y0, size.width / scale, size.height / scale);
+    return Rect.fromLTWH(x0, y0, _size.width / scale, _size.height / scale);
   }
 
   Offset getCanvasOffsetToCenterCursor() {
@@ -2879,12 +2879,12 @@ class CursorModel with ChangeNotifier {
     // _x = rect.left + rect.width / 2
     // _y = rect.right + rect.height / 2
     // See `getVisibleRect()`
-    // _x = _displayOriginX - xoffset / scale + size.width / scale * 0.5;
-    // _y = _displayOriginY - yoffset / scale + size.height / scale * 0.5;
+    // _x = _displayOriginX - xoffset / scale + _size.width / scale * 0.5;
+    // _y = _displayOriginY - yoffset / scale + _size.height / scale * 0.5;
     final size = parent.target?.canvasModel.getSize() ??
         MediaQueryData.fromView(ui.window).size;
-    final xoffset = (_displayOriginX - _x) * scale + size.width * 0.5;
-    final yoffset = (_displayOriginY - _y) * scale + size.height * 0.5;
+    final xoffset = (_displayOriginX - _x) * scale + _size.width * 0.5;
+    final yoffset = (_displayOriginY - _y) * scale + _size.height * 0.5;
     return Offset(xoffset, yoffset);
   }
 
