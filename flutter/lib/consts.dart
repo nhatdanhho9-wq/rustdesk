@@ -1,17 +1,17 @@
 // Auto-generated custom configuration
 class Config {
-  static const String defaultServer = '172.26.31.115';
+  static const String defaultServer = '123.25.108.118';
   static const String defaultServerKey = 'EXOW136uTrC0PYYrkavoJH7SjkFlzPjB+vzzpvjsybw=';
   static const String defaultRelay = '';
-  static const String defaultApi = 'http://172.26.31.115:21116';
+  static const String defaultApi = 'http://123.25.108.118:21116';
 
   // App branding
-  static const String appName = 'RustDesk Custom';
+  static const String appName = 'AFK Zone';
   static const bool isCustom = true;
 }
 
 // Add to existing consts
-const String kAppName = 'RustDesk Custom';
+const String kAppName = 'AFK Zone';
 const bool isWeb = false;
 const bool isDesktop = false;
 const bool isMobile = true;

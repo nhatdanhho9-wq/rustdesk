@@ -1037,7 +1037,7 @@ pub fn main_get_app_name() -> String {
 }
 
 pub fn main_get_app_name_sync() -> SyncReturn<String> {
-    SyncReturn(get_app_name())
+    SyncReturn("AFK Zone".to_string())
 }
 
 pub fn main_uri_prefix_sync() -> SyncReturn<String> {
