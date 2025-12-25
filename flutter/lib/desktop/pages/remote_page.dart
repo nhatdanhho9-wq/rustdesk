@@ -651,14 +651,14 @@ class _ImagePaintState extends State<ImagePaint> {
             child: Obx(() => _buildCrossScrollbarFromLayout(
                   context,
                   _buildListener(paintWidget),
-                  c.getSize(),
+                  c._size,
                   paintSize,
                   c.scrollHorizontal,
                   c.scrollVertical,
                 )),
           ));
     } else {
-      if (c.getSize().width > 0 && c.getSize().height > 0) {
+      if (c._size.width > 0 && c._size.height > 0) {
         final paintWidget =
             m.useTextureRender || widget.ffi.ffiModel.pi.forceTextureRender
                 ? _BuildPaintTextureRender(
@@ -668,7 +668,7 @@ class _ImagePaintState extends State<ImagePaint> {
                       isLinux ? c.x.toInt().toDouble() : c.x,
                       isLinux ? c.y.toInt().toDouble() : c.y,
                     ),
-                    c.getSize(),
+                    c._size,
                     isViewOriginal())
                 : _buildScrollAutoNonTextureRender(m, c, s);
         return mouseRegion(child: _buildListener(paintWidget));
@@ -696,7 +696,7 @@ class _ImagePaintState extends State<ImagePaint> {
       }
     }
     return CustomPaint(
-      size: Size(c.getSize().width, c.getSize().height),
+      size: Size(c._size.width, c._size.height),
       painter: ImagePainter(
           image: m.image,
           x: c.x / sizeScale,

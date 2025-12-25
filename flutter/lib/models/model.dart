@@ -1823,8 +1823,8 @@ class ImageModel with ChangeNotifier {
   double get maxScale {
     if (_image == null) return 1.5;
     final size = parent.target!.canvasModel.getSize();
-    final xscale = size.width / _image!.width;
-    final yscale = size.height / _image!.height;
+    final xscale = _size.width / _image!.width;
+    final yscale = _size.height / _image!.height;
     return max(1.5, max(xscale, yscale));
   }
 
@@ -1832,8 +1832,8 @@ class ImageModel with ChangeNotifier {
   double get minScale {
     if (_image == null) return 1.5;
     final size = parent.target!.canvasModel.getSize();
-    final xscale = size.width / _image!.width;
-    final yscale = size.height / _image!.height;
+    final xscale = _size.width / _image!.width;
+    final yscale = _size.height / _image!.height;
     return min(xscale, yscale) / 1.5;
   }
 
@@ -2871,7 +2871,7 @@ class CursorModel with ChangeNotifier {
     final scale = parent.target?.canvasModel.scale ?? 1;
     final x0 = _displayOriginX - xoffset / scale;
     final y0 = _displayOriginY - yoffset / scale;
-    return Rect.fromLTWH(x0, y0, _size.width / scale, _size.height / scale);
+    return Rect.fromLTWH(x0, y0, parent.target!.canvasModel.getSize().width / scale, parent.target!.canvasModel.getSize().height / scale);
   }
 
   Offset getCanvasOffsetToCenterCursor() {
