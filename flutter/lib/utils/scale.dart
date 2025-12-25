@@ -1,3 +1,4 @@
+const String kCustomScalePercentKey = " custom_scale_percent;\nconst int kScaleCustomMinPercent = 5;\nconst int kScaleCustomMaxPercent = 1000;\n
 import 'package:flutter_hbb/models/platform_model.dart';
 import 'package:uuid/uuid.dart';
 

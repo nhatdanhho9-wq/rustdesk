@@ -1823,8 +1823,8 @@ class ImageModel with ChangeNotifier {
   double get maxScale {
     if (_image == null) return 1.5;
     final size = parent.target!.canvasModel.getSize();
-    final xscale = _size.width / _image!.width;
-    final yscale = _size.height / _image!.height;
+    final xscale = size.width / _image!.width;
+    final yscale = size.height / _image!.height;
     return max(1.5, max(xscale, yscale));
   }
 
@@ -1832,8 +1832,8 @@ class ImageModel with ChangeNotifier {
   double get minScale {
     if (_image == null) return 1.5;
     final size = parent.target!.canvasModel.getSize();
-    final xscale = _size.width / _image!.width;
-    final yscale = _size.height / _image!.height;
+    final xscale = size.width / _image!.width;
+    final yscale = size.height / _image!.height;
     return min(xscale, yscale) / 1.5;
   }
 

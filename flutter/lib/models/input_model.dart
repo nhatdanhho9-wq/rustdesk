@@ -57,7 +57,7 @@ class CanvasCoords {
     model.scrollX = json['scrollX'];
     model.scrollY = json['scrollY'];
     model.scrollStyle = ScrollStyle.fromJson(json['scrollStyle'], ScrollStyle.scrollauto);
-    model._size = Size(json['size']['w'], json['size']['h']);
+    model.getSize() = Size(json['size']['w'], json['size']['h']);
     return model;
   }
 
@@ -69,7 +69,7 @@ class CanvasCoords {
     coords.scrollX = model.scrollX;
     coords.scrollY = model.scrollY;
     coords.scrollStyle = model.scrollStyle;
-    coords.size = model._size;
+    coords.size = model.getSize();
     return coords;
   }
 }
