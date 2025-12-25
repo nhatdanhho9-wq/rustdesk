@@ -9,7 +9,6 @@ import 'package:provider/provider.dart';
 import 'package:wakelock_plus/wakelock_plus.dart';
 import 'package:flutter_hbb/models/state_model.dart';
 
-import '../../consts.dart';
 import '../../common/widgets/overlay.dart';
 import '../../common.dart';
 import '../../common/widgets/dialog.dart';

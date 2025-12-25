@@ -15,7 +15,6 @@ import 'package:get/get.dart';
 import '../../models/model.dart';
 import '../../models/platform_model.dart';
 import '../common.dart';
-import '../consts.dart';
 
 /// Mouse button enum.
 enum MouseButtons { left, right, wheel, back }

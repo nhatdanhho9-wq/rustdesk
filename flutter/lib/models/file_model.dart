@@ -10,7 +10,6 @@ import 'package:path/path.dart' as path;
 import 'package:flutter_hbb/web/dummy.dart'
     if (dart.library.html) 'package:flutter_hbb/web/web_unique.dart';
 
-import '../consts.dart';
 import 'model.dart';
 import 'platform_model.dart';
 
