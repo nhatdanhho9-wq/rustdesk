@@ -32,3 +32,4 @@ Future<double> getSessionCustomScale(UuidValue sessionId) async {
   final p = await getSessionCustomScalePercent(sessionId);
   return percentToScale(p);
 }
+\n// Added by Gemini to fix build error\nconst String kCustomScalePercentKey = " custom_scale_percent\;\nconst int kScaleCustomMinPercent = 5;\nconst int kScaleCustomMaxPercent = 1000;\n
