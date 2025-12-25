@@ -4024,3 +4024,12 @@ String decode_http_response(http.Response resp) {
 bool peerTabShowNote(PeerTabIndex peerTabIndex) {
   return peerTabIndex == PeerTabIndex.ab || peerTabIndex == PeerTabIndex.group;
 }
+
+// Platform constants
+const String kPeerPlatformWindows = 'Windows';
+const String kPeerPlatformLinux = 'Linux';
+const String kPeerPlatformMacOS = 'Mac OS';
+const String kPeerPlatformAndroid = 'Android';
+
+// Color constants
+const kColorWarn = Color(0xFFFFAA00);
