@@ -2569,21 +2569,21 @@ class CanvasModel with ChangeNotifier {
       return;
     }
     final maxX = 0.0;
-    final minX = __size.width + (imageRect.left - imageRect.right) * _scale;
+    final minX = _size.width + (imageRect.left - imageRect.right) * _scale;
     final maxY = 0.0;
-    final minY = __size.height + (imageRect.top - imageRect.bottom) * _scale;
+    final minY = _size.height + (imageRect.top - imageRect.bottom) * _scale;
     Offset offsetToCenter =
         parent.target?.cursorModel.getCanvasOffsetToCenterCursor() ??
             Offset.zero;
     if (minX < 0) {
       _x = min(max(offsetToCenter.dx, minX), maxX);
     } else {
-      // __size.width > (imageRect.right, imageRect.left) * _scale, we should not change _x
+      // _size.width > (imageRect.right, imageRect.left) * _scale, we should not change _x
     }
     if (minY < 0) {
       _y = min(max(offsetToCenter.dy, minY), maxY);
     } else {
-      // __size.height > (imageRect.bottom - imageRect.top) * _scale, , we should not change _y
+      // _size.height > (imageRect.bottom - imageRect.top) * _scale, , we should not change _y
     }
   }
 }
