@@ -62,6 +62,7 @@ class RemotePage extends StatefulWidget {
 class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
   Timer? _timer;
   bool _showBar = !isWebDesktop;
+  Offset _fabPosition = Offset(16, 50); // Initial position: top-left
   bool _showGestureHelp = false;
   String _value = '';
   Orientation? _currentOrientation;
@@ -361,6 +362,49 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     final keyboardIsVisible =
         keyboardVisibilityController.isVisible && _showEdit;
+  // Draggable FAB widget - Add this before build() method
+  Widget _buildDraggableFAB(bool showActionButton, bool keyboardIsVisible) {
+    if (!showActionButton) return SizedBox.shrink();
+    
+    return Positioned(
+      left: _fabPosition.dx,
+      top: _fabPosition.dy,
+      child: GestureDetector(
+        onPanUpdate: (details) {
+          setState(() {
+            _fabPosition = Offset(
+              (_fabPosition.dx + details.delta.dx).clamp(0, MediaQuery.of(context).size.width - 56),
+              (_fabPosition.dy + details.delta.dy).clamp(0, MediaQuery.of(context).size.height - 56),
+            );
+          });
+        },
+        child: FloatingActionButton(
+          mini: !keyboardIsVisible,
+          child: Icon(
+            (keyboardIsVisible || _showGestureHelp)
+                ? Icons.expand_more
+                : Icons.expand_less,
+            color: Colors.white,
+          ),
+          backgroundColor: MyTheme.accent,
+          onPressed: () {
+            setState(() {
+              if (keyboardIsVisible) {
+                _showEdit = false;
+                gFFI.invokeMethod("enable_soft_keyboard", false);
+                _mobileFocusNode.unfocus();
+                _physicalFocusNode.requestFocus();
+              } else if (_showGestureHelp) {
+                _showGestureHelp = false;
+              } else {
+                _showBar = !_showBar;
+              }
+            });
+          },
+        ),
+      ),
+    );
+  }
     final showActionButton = !_showBar || keyboardIsVisible || _showGestureHelp;
 
     return WillPopScope(
@@ -369,35 +413,6 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
         return false;
       },
       child: Scaffold(
-          // workaround for https://github.com/rustdesk/rustdesk/issues/3131
-          floatingActionButtonLocation: keyboardIsVisible
-              ? FABLocation(FloatingActionButtonLocation.endFloat, 0, -35)
-              : null,
-          floatingActionButton: !showActionButton
-              ? null
-              : FloatingActionButton(
-                  mini: !keyboardIsVisible,
-                  child: Icon(
-                    (keyboardIsVisible || _showGestureHelp)
-                        ? Icons.expand_more
-                        : Icons.expand_less,
-                    color: Colors.white,
-                  ),
-                  backgroundColor: MyTheme.accent,
-                  onPressed: () {
-                    setState(() {
-                      if (keyboardIsVisible) {
-                        _showEdit = false;
-                        gFFI.invokeMethod("enable_soft_keyboard", false);
-                        _mobileFocusNode.unfocus();
-                        _physicalFocusNode.requestFocus();
-                      } else if (_showGestureHelp) {
-                        _showGestureHelp = false;
-                      } else {
-                        _showBar = !_showBar;
-                      }
-                    });
-                  }),
           bottomNavigationBar: Obx(() => Stack(
                 alignment: Alignment.bottomCenter,
                 children: [
@@ -445,7 +460,11 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
                             }),
                           ),
                   );
-                })
+                }),
+                OverlayEntry(builder: (context) {
+                  final showActionButton = !_showBar || keyboardIsVisible || _showGestureHelp;
+                  return _buildDraggableFAB(showActionButton, keyboardIsVisible);
+                }),
               ],
             )),
           )),
