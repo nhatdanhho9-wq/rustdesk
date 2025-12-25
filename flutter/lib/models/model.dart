@@ -2088,6 +2088,7 @@ class CanvasModel with ChangeNotifier {
   double get y => _y;
   double get scale => _scale;
   double get devicePixelRatio => _devicePixelRatio;
+  Size get size => _size;
   ScrollStyle get scrollStyle => _scrollStyle;
   ViewStyle get viewStyle => _lastViewStyle;
   RxBool get imageOverflow => _imageOverflow;
