@@ -63,6 +63,8 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
   Timer? _timer;
   bool _showBar = !isWebDesktop;
   Offset _fabPosition = Offset(16, 50); // Initial position: top-left
+  double _fabOpacity = 1.0; // FAB opacity (1.0 = opaque, 0.3 = transparent)
+  Timer? _fabInactivityTimer; // Timer for auto-transparent feature
   bool _showGestureHelp = false;
   String _value = '';
   Orientation? _currentOrientation;
@@ -126,6 +128,9 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
           isKeyboardVisible: keyboardVisibilityController.isVisible);
     });
     WidgetsBinding.instance.addObserver(this);
+
+    // Start FAB auto-transparent timer
+    _resetFabInactivityTimer();
   }
 
   @override
@@ -143,6 +148,7 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
     await gFFI.close();
     _timer?.cancel();
     _timerDidChangeMetrics?.cancel();
+    _fabInactivityTimer?.cancel(); // Cleanup FAB auto-transparent timer
     gFFI.dialogManager.dismissAll();
     await SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual,
         overlays: SystemUiOverlay.values);
@@ -358,18 +364,25 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
           ? getBottomAppBar()
           : Offstage());
 
-  @override
-  Widget build(BuildContext context) {
-    final keyboardIsVisible =
-        keyboardVisibilityController.isVisible && _showEdit;
-  // Draggable FAB widget - Add this before build() method
+  // Reset FAB inactivity timer - called on any user interaction
+  void _resetFabInactivityTimer() {
+    _fabInactivityTimer?.cancel();
+    setState(() => _fabOpacity = 1.0); // Make FAB fully opaque
+
+    // Start new 2-second timer
+    _fabInactivityTimer = Timer(Duration(seconds: 2), () {
+      setState(() => _fabOpacity = 0.3); // Fade to 30% opacity
+    });
+  }
+
   Widget _buildDraggableFAB(bool showActionButton, bool keyboardIsVisible) {
     if (!showActionButton) return SizedBox.shrink();
-    
+
     return Positioned(
       left: _fabPosition.dx,
       top: _fabPosition.dy,
       child: GestureDetector(
+        onPanStart: (_) => _resetFabInactivityTimer(), // Reset timer when drag starts
         onPanUpdate: (details) {
           setState(() {
             _fabPosition = Offset(
@@ -378,33 +391,44 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
             );
           });
         },
-        child: FloatingActionButton(
-          mini: !keyboardIsVisible,
-          child: Icon(
-            (keyboardIsVisible || _showGestureHelp)
-                ? Icons.expand_more
-                : Icons.expand_less,
-            color: Colors.white,
+        onPanEnd: (_) => _resetFabInactivityTimer(), // Reset timer when drag ends
+        child: AnimatedOpacity(
+          opacity: _fabOpacity,
+          duration: Duration(milliseconds: 300), // Smooth fade animation
+          child: FloatingActionButton(
+            mini: !keyboardIsVisible,
+            child: Icon(
+              (keyboardIsVisible || _showGestureHelp)
+                  ? Icons.expand_more
+                  : Icons.expand_less,
+              color: Colors.white,
+            ),
+            backgroundColor: MyTheme.accent,
+            onPressed: () {
+              _resetFabInactivityTimer(); // Reset timer on tap
+              setState(() {
+                if (keyboardIsVisible) {
+                  _showEdit = false;
+                  gFFI.invokeMethod("enable_soft_keyboard", false);
+                  _mobileFocusNode.unfocus();
+                  _physicalFocusNode.requestFocus();
+                } else if (_showGestureHelp) {
+                  _showGestureHelp = false;
+                } else {
+                  _showBar = !_showBar;
+                }
+              });
+            },
           ),
-          backgroundColor: MyTheme.accent,
-          onPressed: () {
-            setState(() {
-              if (keyboardIsVisible) {
-                _showEdit = false;
-                gFFI.invokeMethod("enable_soft_keyboard", false);
-                _mobileFocusNode.unfocus();
-                _physicalFocusNode.requestFocus();
-              } else if (_showGestureHelp) {
-                _showGestureHelp = false;
-              } else {
-                _showBar = !_showBar;
-              }
-            });
-          },
         ),
       ),
     );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    final keyboardIsVisible =
+        keyboardVisibilityController.isVisible && _showEdit;
     final showActionButton = !_showBar || keyboardIsVisible || _showGestureHelp;
 
     return WillPopScope(
@@ -601,9 +625,11 @@ class _RemotePageState extends State<RemotePage> with WidgetsBindingObserver {
               right: 10,
               child: QualityMonitor(gFFI.qualityMonitorModel),
             ),
-            KeyHelpTools(
-                keyboardIsVisible: keyboardIsVisible,
-                showGestureHelp: _showGestureHelp),
+            // KeyHelpTools toolbar disabled - user requested keyboard only, no shortcuts
+            // KeyHelpTools(
+            //     keyboardIsVisible: keyboardIsVisible,
+            //     showGestureHelp: _showGestureHelp),
+            SizedBox.shrink(), // Placeholder
             SizedBox(
               width: 0,
               height: 0,
